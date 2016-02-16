@@ -1,19 +1,43 @@
 var express = require('express');
+var config = require('./config');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cheerio = require('cheerio');
+var stormpath = require('express-stormpath');
 
-var MongoClient = require('mongodb').MongoClient;
-
-var day = require('./routes/day');
-var todays = require('./routes/todays');
-var fullweek = require('./routes/fullweek');
-var returncolors = require('./routes/returncolors');
+var Register = require('./routes/Register');
 
 var app = express();
+
+app.use(stormpath.init(app, {
+  web: {
+    register: {
+      fields: {
+        username: {
+          enabled: true,
+          label: 'Username',
+          name: 'username',
+          placeholder: 'Username',
+          required: true,
+          type: 'text'
+        }
+      }
+    }
+  },
+  client: {
+    apiKey: {
+      id: process.env.STORMPATH_CLIENT_APIKEY_ID,
+      secret: process.env.STORMPATH_CLIENT_APIKEY_SECRET,
+    }
+  },
+  application: {
+    href: process.env.STORMPATH_APPLICATION_HREF
+  },
+  website: true
+}));
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -33,10 +57,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/day', day);
-app.use('/todays', todays);
-app.use('/fullweek', fullweek);
-app.use('/returncolors', returncolors);
+app.use('/NewAccount', Register);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -69,11 +90,16 @@ app.use(function(err, req, res, next) {
   });
 });
 
-var server = app.listen(3000, function () {
-  var host = server.address().address;
-  var port = server.address().port;
+//var server = app.listen(3000, function () {
+//  var host = server.address().address;
+//  var port = server.address().port;
+//
+//  console.log('Example app listening at http://%s:%s', host, port);
+//});
 
-  console.log('Example app listening at http://%s:%s', host, port);
+app.on('stormpath.ready', function() {
+  app.listen(3000);
+  console.log("Running at localhost:3000");
 });
 
 module.exports = app;
