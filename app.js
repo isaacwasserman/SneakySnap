@@ -7,10 +7,15 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cheerio = require('cheerio');
 var stormpath = require('express-stormpath');
+var mongoose = require('mongoose');
 
 var Register = require('./routes/Register');
+var home = require('./routes/home');
+var postPhoto = require('./routes/postPhoto');
 
 var app = express();
+
+mongoose.connect('mongodb://zeekw:Kinnock2016@ds011298.mlab.com:11298/sneakysnapposts');
 
 app.use(stormpath.init(app, {
   web: {
@@ -25,16 +30,19 @@ app.use(stormpath.init(app, {
           type: 'text'
         }
       }
+    },
+    login: {
+      enabled: true,
+      nextUri: "/"
     }
   },
   client: {
     apiKey: {
-      id: process.env.STORMPATH_CLIENT_APIKEY_ID,
-      secret: process.env.STORMPATH_CLIENT_APIKEY_SECRET,
+      file: 'apiKey.properties'
     }
   },
   application: {
-    href: process.env.STORMPATH_APPLICATION_HREF
+    href: 'https://api.stormpath.com/v1/applications/YaqUfgYSVHo3s8CBRQdTW'
   },
   website: true
 }));
@@ -58,6 +66,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/NewAccount', Register);
+app.use('/', home);
+app.use('/postPhoto', postPhoto);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

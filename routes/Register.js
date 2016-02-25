@@ -20,10 +20,4 @@ router.post('/', function(req, res){
   res.json("Account Successfully Created");
 });
 
-router.get('/testlogin', function(req, res){
-  app.authenticateAccount({
-    username:'john.smith@example.com', password:'Changeme1'
-  }, onLogin);
-});
-
 module.exports = router;
