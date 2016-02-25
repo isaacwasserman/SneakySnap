@@ -1,3 +1,5 @@
-doc/apiKey.properties
-doc/.env
+*~
+*.DS_Store
+*.properties
+*.env
 node_modules
