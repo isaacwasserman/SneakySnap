@@ -14,7 +14,7 @@ var postSchema = new Schema({
 
 // the schema is useless so far
 // we need to create a model using it
-//var Post = mongoose.model('Post', postSchema);
+var Post = mongoose.model('Post', postSchema);
 
 // make this available to our users in our Node applications
 var Post = module.exports = mongoose.model('Post', postSchema);

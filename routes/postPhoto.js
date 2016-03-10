@@ -7,7 +7,7 @@ var postModel = require('../models/postSchema');
 router.get('/', function(req, res){
   
   var username = "i_wasserman";
-  var picURL = "http://interfacelift.com/wallpaper/D14dddf0/01819_birdonabranch_1920x1080.jpg";
+  var picURL = "https://static.pexels.com/photos/9752/taking-photo-hiking-sport-adventure.jpg";
   var taggedUsername = "aharonw";
   
   var postData = new Post({
@@ -21,7 +21,6 @@ router.get('/', function(req, res){
     if (err) throw err;
 
     console.log('Post saved successfully!');
-    console.log(post);
   });
   
   res.json("Posted!");
